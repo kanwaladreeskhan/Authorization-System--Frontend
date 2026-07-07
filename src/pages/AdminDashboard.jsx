@@ -1,6 +1,6 @@
 import { useState } from "react";
 import api from "../api/axios";
-
+import { useNavigate } from "react-router-dom";
 export default function AdminDashboard() {
 
     const [email, setEmail] = useState("");
@@ -22,7 +22,23 @@ export default function AdminDashboard() {
             [e.target.name]: e.target.checked
         });
     };
+    
 
+const navigate = useNavigate();
+
+const logout = async () => {
+
+    try {
+        await api.post("logout/");
+    } catch (err) {
+        console.log(err);
+    }
+
+    localStorage.removeItem("access_token");
+    localStorage.removeItem("user");
+
+    navigate("/login");
+};
     const savePermissions = async () => {
         setStatusMessage("");
         setErrorMessage("");
@@ -147,6 +163,12 @@ export default function AdminDashboard() {
                 >
                     {isSaving ? "Saving permissions..." : "Save Permissions"}
                 </button>
+                <button
+    className="button button-secondary"
+    onClick={logout}
+>
+    Logout
+</button>
             </div>
         </div>
     );
